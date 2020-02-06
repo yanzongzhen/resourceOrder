@@ -28,6 +28,7 @@ class AdminUser(ModelBase):
     openid = Column(String(255), unique=True, comment="唯一登录id")
     shopAddr = Column(String(255), comment="药店地址")
     shopName = Column(String(128), comment="药店")
+    is_admin = Column(Boolean, default=False, comment="1 管理员 0 店长")
     createTime = Column(DateTime, default=datetime.now, comment="创建时间")
     updateTime = Column(DateTime, nullable=True, comment="更新时间")
 
@@ -246,7 +247,7 @@ class Orders(ModelBase):
         return {
             "uuid": self.uuid,
             "inQueue": self.inQueue,
-            "Status": self.Status,
+            "status": self.Status,
             "pharmacy": {
                 "name": self.pharmacyName,
                 "district": self.pharmacyDistrict,

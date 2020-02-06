@@ -6,7 +6,7 @@
 @Software: PyCharm
 @Time :    2020/2/6 下午2:06
 """
-from web.apps.base.controller import AuthRequestHandler, ABC, BaseRequestHandler
+from web.apps.base.controller import AuthRequestHandler, ABC, BaseRequestHandler, AdminRequestHandler
 from web.apps.product.libs import get_product, add_product, delete_product, update_product
 
 
@@ -23,7 +23,7 @@ class ProductsNoneHandler(BaseRequestHandler, ABC):
         return self.write_json(response)
 
 
-class ProductsHandler(AuthRequestHandler, ABC):
+class ProductsHandler(AdminRequestHandler, ABC):
 
     async def get(self):
         response = dict()

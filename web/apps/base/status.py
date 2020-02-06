@@ -21,13 +21,6 @@ class StatusCode(IntEnum):
     not_found_error = 10009  # 不存在
     file_save_error = 10010  # 文件保存失败
     third_api_error = 10011  # 文件保存失败
+    no_access_error = 10012  # 文件保存失败
+    no_auth_error = 10013  # 文件保存失败
 
-
-class UserCenterStatusCode(StatusCode, IntEnum):
-    account_error = 20001  # 账户未找到
-    password_error = 20002  # 密码错误
-    not_match_error = 20003  # 密码不一致
-    account_exist_error = 20004  # 账户已经存在
-    miss_token_error = 20005  # 缺少Token
-    token_expired_error = 20006  # token 过期
-    access_error = 20007  # 没有权限

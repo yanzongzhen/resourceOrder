@@ -6,7 +6,7 @@
 @Software: PyCharm
 @Time :    2020/2/6 下午12:07
 """
-from web.apps.base.controller import BaseRequestHandler,ABC, AuthRequestHandler
+from web.apps.base.controller import BaseRequestHandler,ABC,AuthRequestHandler, AdminRequestHandler
 from web.apps.orders.libs.order_lib import get_orders, add_orders, update_status, get_users
 
 
@@ -44,9 +44,10 @@ class OrderVerifyHandler(AuthRequestHandler, ABC):
         return self.write_json(response)
 
 
-class OrderUserHandler(AuthRequestHandler, ABC):
+class OrderUserHandler(AdminRequestHandler, ABC):
 
     async def get(self):
+
         user_id = self.get_argument('residentId', None)
         phone = self.get_argument('phone', None)
         response = dict()

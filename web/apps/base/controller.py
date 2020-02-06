@@ -15,7 +15,7 @@ from tornado.escape import json_decode
 from web.models.dbSession import dbSession
 from web.utils import jsondate
 from web.middleware import MiddleHandler
-from web.apps.base.status import UserCenterStatusCode, StatusCode
+from web.apps.base.status import StatusCode
 from web.settings import middleware_list as MIDDLEWARE_LIST
 from web.utils.tools import aes_tools
 
@@ -117,6 +117,14 @@ class AuthRequestHandler(BaseRequestHandler, ABC):
     """
     middleware_list = MIDDLEWARE_LIST + \
         ['web.middleware.middleware.UserAuthMiddleware']
+
+
+class AdminRequestHandler(BaseRequestHandler, ABC):
+    """
+        认证 Handler
+    """
+    middleware_list = MIDDLEWARE_LIST + \
+        ['web.middleware.middleware.UserAuthMiddleware', 'web.middleware.middleware.AdminMiddleware']
 
 
 class DefaultHandler(BaseRequestHandler, ABC):
