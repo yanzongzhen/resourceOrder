@@ -7,9 +7,10 @@
 @Time :    2020/2/6 下午12:45
 """
 
-from web.apps.region.controller import RegionHandler
+from web.apps.region.controller import RegionHandler, HospitalHandler
 
 
 urlpatterns = [
-    (r'/region', RegionHandler)
+    (r'/region', RegionHandler),
+    (r'/pharmacy', HospitalHandler)
 ]

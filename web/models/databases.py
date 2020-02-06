@@ -8,7 +8,7 @@
 """
 from datetime import datetime
 from uuid import uuid4
-from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean, Float, TIMESTAMP
+from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean, Float, text
 from web.models.dbSession import ModelBase, dbSession
 from web.utils.date2json import to_json
 import time
@@ -339,8 +339,92 @@ class SyStoreModel(ModelBase):
     CreateTime = Column(DateTime, default=datetime.now, comment="创建时间")
     LastUpdateTime = Column(DateTime, comment="最后更新时间")
 
+    @classmethod
+    def by_address(cls, address, limit=10):
+        return dbSession.query(cls).filter(cls.Address.like('%{}%'.format(address))).limit(limit)
 
     @classmethod
-    def filter(cls, district, latitude, longitude):
-        pass
+    def filter(cls, district, latitude, longitude, limit=10):
+        sql = """
+            SELECT
+                    StoreSn,
+                    OldSn,
+                    StoreName,
+                    Company,
+                    Address,
+                    Lng,
+                    Lat,
+                    Tel,
+                    MembersDay,
+                    OpenTime,
+                    InsuranceType,
+                    EnbaleSaleGoods,
+                    IsNeight,
+                    Status,
+                    CreateTime,
+                    LastUpdateTime,
+                    acos(cos({lat}*pi()/180)*cos(Lat*pi()/180)*cos({lng}*pi()/180-Lng*pi()/180)+sin({lat}*pi()/180)*sin(Lat * pi()/180)) *
+                        6367000 / 1000 AS distance
+                FROM
+                    sy_store
+                WHERE
+                    Address like '%{district}%'
+                ORDER BY distance asc 
+                LIMIT {limit}
+        """.format(**{"district": district, "lat": latitude, "lng":longitude, "limit": limit})
+        results = dbSession.execute(sql)
+        return cls.result_to_dict(results)
 
+    @staticmethod
+    def result_to_dict(results):
+        keys = ["StoreSn",
+                "OldSn",
+                "StoreName",
+                "Company",
+                "Address",
+                "Lng",
+                "Lat",
+                "Tel",
+                "MembersDay",
+                "OpenTime",
+                "InsuranceType",
+                "EnbaleSaleGoods",
+                "IsNeight",
+                "Status",
+                "CreateTime",
+                "LastUpdateTime",
+                "distance"]
+        new_results = []
+        raw_results = []
+        for res in results:
+            new_results.append(res)
+        for row in new_results:
+            tmp = dict()
+            for i in range(len(row)):
+                value = row[i]
+                key = keys[i]
+                if key == 'CreateTime' or key == 'LastUpdateTime':
+                    continue
+                tmp.setdefault(key, value)
+            raw_results.append(tmp)
+        return raw_results
+
+    def to_dict(self):
+        return {
+            "StoreSn": self.StoreSn,
+            "OldSn": self.OldSn,
+            "StoreName": self.StoreName,
+            "Address": self.Address,
+            "Tel": self.Tel,
+            "Company": self.Company,
+            "Lng": self.Lng,
+            "Lat": self.Lat,
+            "MembersDay": self.MembersDay,
+            "OpenTime": self.OpenTime,
+            "InsuranceType": self.InsuranceType,
+            "EnbaleSaleGoods": self.EnbaleSaleGoods,
+            "IsNeight": self.IsNeight,
+            "Status": self.Status,
+            "CreateTime": format_time(self.CreateTime),
+            "LastUpdateTime": format_time(self.LastUpdateTime)
+        }
