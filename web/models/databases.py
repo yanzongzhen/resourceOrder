@@ -8,7 +8,7 @@
 """
 from datetime import datetime
 from uuid import uuid4
-from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean
+from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean, Float
 from web.models.dbSession import ModelBase, dbSession
 from web.utils.date2json import to_json
 
@@ -278,3 +278,27 @@ class Products(ModelBase):
             "createdTime": format_time(self.createdTime),
             "updatedTime": format_time(self.updatedTime)
         }
+
+
+class SyStoreModel(ModelBase):
+
+    __tablename__ = "sy_store"
+
+    StoreSn = Column(String(4), primary_key=True)
+    OldSn = Column(String(10), comment="老编码")
+    StoreName = Column(String(255), comment="门店名称")
+    Company = Column(String(100), comment="分公司")
+    Address = Column(String(255), comment="地址")
+    Lng = Column(Float, comment="经度")
+    Lat = Column(Float, comment="纬度")
+    Tel = Column(String(100), comment="门店电话")
+    MembersDay = Column(Integer, comment="会员日")
+    OpenTime = Column(String(255), comment="营业时间")
+    InsuranceType = Column(String(255))
+    EnbaleSaleGoods = Column(Boolean, default=True, comment="是否可售医保商品")
+    IsNeight = Column(Boolean, default=False, comment="夜间营业")
+    Status = Column(Boolean, default=True, comment="营业状态")
+    CreateTime = Column(DateTime, default=datetime.now, comment="创建时间")
+    LastUpdateTime = Column(DateTime, comment="最后更新时间")
+
+

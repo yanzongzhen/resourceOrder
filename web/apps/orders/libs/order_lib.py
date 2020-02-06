@@ -39,12 +39,12 @@ async def add_orders(self, payload):
     if not state:
         return {'status': False, "msg": "参数校验失败", "code": StatusCode.miss_params_error.value}
     user = OrderUser.by_id_card(payload['user']['residentId'])
-    userInfo = dict(userName=payload['user']['name'],
-                    userIdCard=payload['user']['residentId'],
-                    userPhone=payload['user']['telephone'],
-                    communityName=payload['user']['communityName'],
-                    communityDistrict=payload['user']['communityDistrict'],
-                    communityAddress=payload['user']['communityAddress'])
+    userInfo = dict(userName=payload['user'].get('name'),
+                    userIdCard=payload['user'].get('residentId'),
+                    userPhone=payload['user'].get('telephone'),
+                    communityName=payload['user'].get('communityName'),
+                    communityDistrict=payload['user'].get('communityDistrict'),
+                    communityAddress=payload['user'].get('communityAddress'))
     if not user:
         try:
             user = OrderUser(**userInfo)
