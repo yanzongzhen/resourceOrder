@@ -10,15 +10,8 @@ from logzero import logger
 from web.apps.base.status import StatusCode
 from web.models.databases import OrderUser, Orders, SMSRecord
 from web.utils.date2json import to_json
-import hashlib
 from datetime import datetime
 from web.models.form_validate import validate
-
-
-def get_str_sha1_secret_str(res):
-    sha = hashlib.sha1(res.encode('utf-8'))
-    encrypts = sha.hexdigest()
-    return encrypts
 
 
 async def get_orders(self, residentId):

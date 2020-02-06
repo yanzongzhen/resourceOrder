@@ -1,4 +1,5 @@
 import base64
+import hashlib
 import socket
 from web.settings import sys_aes_key, sys_aes_iv
 from Crypto.Cipher import AES
@@ -36,3 +37,10 @@ class AesCrypto:
 
 
 aes_tools = AesCrypto(key=sys_aes_key, IV=sys_aes_iv)
+
+
+def get_str_sha1_secret_str(res):
+    sha = hashlib.sha1(res.encode('utf-8'))
+    encrypts = sha.hexdigest()
+    return encrypts
+

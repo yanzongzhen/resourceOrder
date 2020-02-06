@@ -8,9 +8,9 @@
 """
 
 
-from web.apps.product.controller import ProductsHandler
+from web.apps.product.controller import ProductsNoneHandler
 
 
 urlpatterns = [
-    (r'', ProductsHandler)
+    (r'', ProductsNoneHandler)
 ]

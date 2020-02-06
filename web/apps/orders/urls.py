@@ -7,11 +7,9 @@
 @Time :    2020/2/6 下午12:08
 """
 
-from web.apps.orders.controller import OrderHandler, OrderVerifyHandler, OrderUserHandler
+from web.apps.orders.controller import OrderHandler
 
 
 urlpatterns = [
-    (r'', OrderHandler),
-    (r'/verify', OrderVerifyHandler),
-    (r'/user', OrderUserHandler)
+    (r'', OrderHandler)
 ]

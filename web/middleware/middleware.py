@@ -7,3 +7,28 @@
 @Time :    2019/12/9 上午9:50
 """
 
+from logzero import logger
+from web.middleware.base import Middleware
+from web.models.databases import AdminUser
+
+
+class UserAuthMiddleware(Middleware):
+    """
+        微信用户认证中间件
+    """
+
+    async def process_request(self):
+        logger.debug("用户认证中间件， 正在认证")
+        openid = self.request.headers.get('openid', None)
+        if openid is None:
+            kw = {"code": 10006, "message": "用户认证数据'openid'缺失"}
+            return self.finish(kw)
+        self.openid = openid    # 传入openid
+        self.current_user = await get_user(self, openid)
+
+    def process_response(self):
+        logger.debug("用户认证中间件， 认证完成")
+
+
+async def get_user(self, openid):
+    return AdminUser.by_openid(openid)

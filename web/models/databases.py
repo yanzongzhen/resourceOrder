@@ -19,6 +19,34 @@ def format_time(_time):
     return _time.strftime('%Y-%m-%d %H:%M:%S') if _time else ''
 
 
+class AdminUser(ModelBase):
+    __tablename__ = 'admin_user'
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    userName = Column(String(32), comment="姓名")
+    phone = Column(String(32), comment="手机")
+    openid = Column(String(255), unique=True, comment="唯一登录id")
+    shopAddr = Column(String(255), comment="药店地址")
+    shopName = Column(String(128), comment="药店")
+    createTime = Column(DateTime, default=datetime.now, comment="创建时间")
+    updateTime = Column(DateTime, nullable=True, comment="更新时间")
+
+    @classmethod
+    def by_openid(cls, kid):
+        return dbSession.query(cls).filter_by(openid=kid).first()
+
+    def to_dict(self):
+        return {
+            "userName": self.userName,
+            "phone": self.phone,
+            "openid": self.openid,
+            "shopAddr": self.shopAddr,
+            "shopName": self.shopName,
+            "createTime": format_time(self.createTime),
+            "updateTime": format_time(self.updateTime)
+        }
+
+
 class OrderUser(ModelBase):
     __tablename__ = 'order_user'
 
@@ -282,7 +310,6 @@ class Products(ModelBase):
 
 
 class SMSRecord(ModelBase):
-
     __tablename__ = "sms_record"
 
     id = Column(Integer, autoincrement=True, primary_key=True)
@@ -319,7 +346,6 @@ class SMSRecord(ModelBase):
 
 
 class SyStoreModel(ModelBase):
-
     __tablename__ = "sy_store"
 
     StoreSn = Column(String(4), primary_key=True)
@@ -371,7 +397,7 @@ class SyStoreModel(ModelBase):
                     Address like '%{district}%'
                 ORDER BY distance asc 
                 LIMIT {limit}
-        """.format(**{"district": district, "lat": latitude, "lng":longitude, "limit": limit})
+        """.format(**{"district": district, "lat": latitude, "lng": longitude, "limit": limit})
         results = dbSession.execute(sql)
         return cls.result_to_dict(results)
 
