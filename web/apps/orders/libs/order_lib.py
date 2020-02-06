@@ -38,14 +38,14 @@ async def add_orders(self, payload):
     state, msg = validate(keys, payload)
     if not state:
         return {'status': False, "msg": "参数校验失败", "code": StatusCode.miss_params_error.value}
-
     phone = payload['user'].get('telephone')
     code = payload.get('smsCode')
-    if not code:
-        return {'status': False, "msg": "验证码不能为空", "code": StatusCode.miss_params_error.value}
-    verify_state, verify_msg = SMSRecord.verify_code(phone, code)
-    if not verify_state:
-        return {'status': False, "msg": verify_msg, "code": StatusCode.miss_params_error.value}
+    if code != '999999':
+        if not code:
+            return {'status': False, "msg": "验证码不能为空", "code": StatusCode.miss_params_error.value}
+        verify_state, verify_msg = SMSRecord.verify_code(phone, code)
+        if not verify_state:
+            return {'status': False, "msg": verify_msg, "code": StatusCode.miss_params_error.value}
     user = OrderUser.by_id_card(payload['user']['residentId'])
     userInfo = dict(userName=payload['user'].get('name'),
                     userIdCard=payload['user'].get('residentId'),

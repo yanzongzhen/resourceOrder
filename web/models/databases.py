@@ -340,3 +340,7 @@ class SyStoreModel(ModelBase):
     LastUpdateTime = Column(DateTime, comment="最后更新时间")
 
 
+    @classmethod
+    def filter(cls, district, latitude, longitude):
+        pass
+
