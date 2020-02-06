@@ -34,7 +34,7 @@ async def get_orders(self, residentId):
 
 
 async def add_orders(self, payload):
-    keys = ["user", "phamacy", "item", "smsCode"]
+    keys = ["user", "pharmacy", "item", "smsCode"]
     state, msg = validate(keys, payload)
     if not state:
         return {'status': False, "msg": "参数校验失败", "code": StatusCode.miss_params_error.value}
@@ -59,9 +59,9 @@ async def add_orders(self, payload):
         userId=user.id,
         productName=payload.get('item').get('name'),
         productQty=payload.get('item').get('quantity'),
-        pharmacyName=payload.get('phamacy').get('name'),
-        pharmacyDistrict=payload.get('phamacy').get('district'),
-        pharmacyAddress=payload.get('phamacy').get('address'),
+        pharmacyName=payload.get('pharmacy').get('name'),
+        pharmacyDistrict=payload.get('pharmacy').get('district'),
+        pharmacyAddress=payload.get('pharmacy').get('address'),
     )
     try:
         order = Orders(**orderInfo)
