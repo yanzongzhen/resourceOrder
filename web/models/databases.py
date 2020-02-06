@@ -8,9 +8,10 @@
 """
 from datetime import datetime
 from uuid import uuid4
-from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean, Float
+from sqlalchemy import Column, Integer, String, TEXT, DateTime, and_, Boolean, Float, TIMESTAMP
 from web.models.dbSession import ModelBase, dbSession
 from web.utils.date2json import to_json
+import time
 
 
 def format_time(_time):
@@ -278,6 +279,43 @@ class Products(ModelBase):
             "createdTime": format_time(self.createdTime),
             "updatedTime": format_time(self.updatedTime)
         }
+
+
+class SMSRecord(ModelBase):
+
+    __tablename__ = "sms_record"
+
+    id = Column(Integer, autoincrement=True, primary_key=True)
+    phone = Column(String(32), comment="手机号")
+    code = Column(String(10), comment="验证码")
+    createdTime = Column(Integer, comment="提交时间")
+
+    def is_expired(self):
+        """
+        :return:  True 过期  False 正常
+        """
+        now = int(time.time())
+        return now - self.createdTime > 1800
+
+    @classmethod
+    def verify_code(cls, phone, code):
+        row = dbSession.query(cls).filter(cls.phone == phone).first()
+        if row:
+            if row.is_expired():
+                dbSession.delete(row)
+                dbSession.commit()
+                return False, "您的验证码过期"
+            else:
+                if row.code == code:
+                    dbSession.delete(row)
+                    dbSession.commit()
+                    return True, "验证成功"
+                else:
+                    dbSession.delete(row)
+                    dbSession.commit()
+                    return False, "您的验证码无效, 请重新申请"
+        else:
+            return False, "您的验证码无效"
 
 
 class SyStoreModel(ModelBase):
