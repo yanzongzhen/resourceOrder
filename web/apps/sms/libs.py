@@ -22,7 +22,7 @@ async def send_sms(self, phone):
     data = {
         "params": json.dumps({
             "mobile": phone,
-            "messageContent": f"【爱城市网】您本次登陆的验证码为：{code}，验证码30分钟内有效"
+            "messageContent": f"【爱城市网】您本次登录的验证码为：{code}，验证码30分钟内有效"
         })
     }
     try:
