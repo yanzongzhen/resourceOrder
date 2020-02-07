@@ -7,12 +7,11 @@
 @Time :    2019/12/5 上午11:50
 """
 import json
-import os
 from abc import ABC
-
 import xmltodict
+from logzero import logger
 from tornado.escape import json_decode
-from web.models.dbSession import dbSession
+from web.models.dbSession import dbSession, reconnect_db
 from web.utils import jsondate
 from web.middleware import MiddleHandler
 from web.apps.base.status import StatusCode
@@ -40,7 +39,14 @@ class BaseRequestHandler(CorsMiddleware, MiddleHandler, ABC):
 
     def initialize(self):
         super(BaseRequestHandler, self).initialize()
-        self.db = dbSession
+        try:
+            if dbSession:
+                self.db = dbSession
+            else:
+                self.db = reconnect_db()
+        except Exception as e:
+            logger.error(f"Mysql Session Timeout {e}")
+            self.db = reconnect_db()
 
     async def prepare(self):
         await super(BaseRequestHandler, self).prepare()
